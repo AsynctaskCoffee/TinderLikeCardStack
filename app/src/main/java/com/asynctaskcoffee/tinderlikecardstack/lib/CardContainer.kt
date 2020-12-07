@@ -1,11 +1,10 @@
-package com.asynctaskcoffee.tinderlikecardstack
+package com.asynctaskcoffee.tinderlikecardstack.lib
 
 import android.animation.Animator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Resources
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -17,12 +16,20 @@ import android.view.animation.Transformation
 import android.widget.FrameLayout
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.asynctaskcoffee.tinderlikecardstack.R
+import com.asynctaskcoffee.tinderlikecardstack.lib.CardContainerAdapter
 import kotlin.math.roundToInt
 
 
 @SuppressLint("ClickableViewAccessibility")
 class CardContainer(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs),
     View.OnTouchListener, CardContainerAdapter.DataListener {
+
+    private var cardListener: CardListener? = null
+
+    fun setOnCardActionListener(cardListener: CardListener) {
+        this.cardListener = cardListener
+    }
 
     private var cardContainerAdapter: CardContainerAdapter? = null
     private var count = 0
@@ -35,6 +42,7 @@ class CardContainer(context: Context, attrs: AttributeSet?) : FrameLayout(contex
     private var rightBoundary = 0f
     private var leftBoundary = 0f
     private var screenWidth = 0
+    private var swipeIndex = 0
 
     private var oldX = 0f
     private var oldY = 0f
@@ -80,6 +88,7 @@ class CardContainer(context: Context, attrs: AttributeSet?) : FrameLayout(contex
             viewList[viewList.size - 1].setOnTouchListener(this)
         } else {
             emptyContainer?.visibility = View.VISIBLE
+            cardListener?.onSwipeCompleted()
         }
     }
 
@@ -197,12 +206,23 @@ class CardContainer(context: Context, attrs: AttributeSet?) : FrameLayout(contex
                     when {
                         isCardAtLeft(v) -> {
                             dismissCard(v, -(screenWidth * 2))
+                            cardContainerAdapter?.let {
+                                cardListener?.onLeftSwipe(swipeIndex, it.getItem(swipeIndex))
+                                swipeIndex++
+                            }
                         }
                         isCardAtRight(v) -> {
                             dismissCard(v, (screenWidth * 2))
+                            cardContainerAdapter?.let {
+                                cardListener?.onRightSwipe(swipeIndex, it.getItem(swipeIndex))
+                                swipeIndex++
+                            }
                         }
                         else -> {
                             resetCard(v)
+                            cardContainerAdapter?.let {
+                                cardListener?.onSwipeCancel(swipeIndex, it.getItem(swipeIndex))
+                            }
                         }
                     }
                     return true
@@ -241,6 +261,13 @@ class CardContainer(context: Context, attrs: AttributeSet?) : FrameLayout(contex
 
                     if (viewList.isNotEmpty()) {
                         viewList.removeLast()
+                        cardContainerAdapter?.let {
+                            if (it.getCount() > swipeIndex)
+                                cardListener?.onItemShow(
+                                    swipeIndex,
+                                    it.getItem(swipeIndex)
+                                )
+                        }
                         setCardForAnimation()
                         reOrderMargins()
                     }
@@ -275,6 +302,7 @@ class CardContainer(context: Context, attrs: AttributeSet?) : FrameLayout(contex
     }
 
     private fun reset() {
+        swipeIndex = 0
         count = 0
         viewList.clear()
         mainContainer?.removeAllViews()
@@ -315,6 +343,7 @@ class CardContainer(context: Context, attrs: AttributeSet?) : FrameLayout(contex
         count = viewList.size
 
         setCardForAnimation()
+        cardListener?.onItemShow(swipeIndex, cardContainerAdapter.getItem(swipeIndex))
     }
 
     private fun addOneMore() {
