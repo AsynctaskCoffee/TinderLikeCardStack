@@ -23,7 +23,7 @@ import kotlin.math.roundToInt
 
 @SuppressLint("ClickableViewAccessibility")
 class CardContainer(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs),
-    View.OnTouchListener, CardContainerAdapter.DataListener {
+    View.OnTouchListener, CardContainerAdapter.DataListener, CardContainerAdapter.ActionListener {
 
     private var cardListener: CardListener? = null
 
@@ -32,11 +32,14 @@ class CardContainer(context: Context, attrs: AttributeSet?) : FrameLayout(contex
     }
 
     private var cardContainerAdapter: CardContainerAdapter? = null
-    private var count = 0
+
     var margin = 25.px
     var marginTop = 10.px
     var maxStackSize = 5
+
     private var mainContainer: FrameLayout? = null
+    private var headerContainer: FrameLayout? = null
+    private var footerContainer: FrameLayout? = null
     private var emptyContainer: FrameLayout? = null
 
     private var rightBoundary = 0f
@@ -44,17 +47,16 @@ class CardContainer(context: Context, attrs: AttributeSet?) : FrameLayout(contex
     private var screenWidth = 0
     private var swipeIndex = 0
 
+    private var count = 0
     private var oldX = 0f
     private var oldY = 0f
     private var newX = 0f
     private var newY = 0f
     private var dX = 0f
     private var dY = 0f
-
     private var resetX = 0f
     private var resetY = 0f
-
-    private val cardDegreesForTransform: Float = 40.0f
+    private val cardDegreesForTransform = 40.0f
 
     private var viewList: ArrayList<View> = arrayListOf()
 
@@ -74,10 +76,29 @@ class CardContainer(context: Context, attrs: AttributeSet?) : FrameLayout(contex
         emptyContainer?.addView(v)
     }
 
+    fun addHeaderView(v: View) {
+        if (v.parent != null)
+            (v.parent as ViewGroup).removeView(v)
+        headerContainer?.removeAllViews()
+        headerContainer?.addView(v)
+    }
+
+    fun addFooterView(v: View) {
+        if (v.parent != null)
+            (v.parent as ViewGroup).removeView(v)
+        footerContainer?.removeAllViews()
+        footerContainer?.addView(v)
+    }
+
+    fun getHeaderView(): View? = headerContainer
+    fun getFooterView(): View? = footerContainer
+
     private fun setupSurface() {
         val viewMain = LayoutInflater.from(context).inflate(R.layout.card_container, null)
         mainContainer = viewMain.findViewById(R.id.mainContainer)
         emptyContainer = viewMain.findViewById(R.id.emptyLayout)
+        headerContainer = viewMain.findViewById(R.id.headerContainer)
+        footerContainer = viewMain.findViewById(R.id.footerContainer)
         addView(viewMain)
     }
 
@@ -256,20 +277,22 @@ class CardContainer(context: Context, attrs: AttributeSet?) : FrameLayout(contex
                 }
 
                 override fun onAnimationEnd(animation: Animator?) {
-                    val viewGroup = card.parent as FrameLayout
-                    viewGroup.removeView(card)
+                    card.parent?.let { viewParent ->
+                        val viewGroup = viewParent as FrameLayout
+                        viewGroup.removeView(card)
 
-                    if (viewList.isNotEmpty()) {
-                        viewList.removeLast()
-                        cardContainerAdapter?.let {
-                            if (it.getCount() > swipeIndex)
-                                cardListener?.onItemShow(
-                                    swipeIndex,
-                                    it.getItem(swipeIndex)
-                                )
+                        if (viewList.isNotEmpty()) {
+                            viewList.removeLast()
+                            cardContainerAdapter?.let {
+                                if (it.getCount() > swipeIndex)
+                                    cardListener?.onItemShow(
+                                        swipeIndex,
+                                        it.getItem(swipeIndex)
+                                    )
+                            }
+                            setCardForAnimation()
+                            reOrderMargins()
                         }
-                        setCardForAnimation()
-                        reOrderMargins()
                     }
                 }
 
@@ -313,6 +336,7 @@ class CardContainer(context: Context, attrs: AttributeSet?) : FrameLayout(contex
 
         this.cardContainerAdapter = cardContainerAdapter
         this.cardContainerAdapter?.dataListener = this
+        this.cardContainerAdapter?.actionListener = this
 
         if (cardContainerAdapter.getCount() > 0) {
             emptyContainer?.visibility = View.INVISIBLE
@@ -391,6 +415,35 @@ class CardContainer(context: Context, attrs: AttributeSet?) : FrameLayout(contex
         }
         reOrderMarginsForNewItems()
         setCardForAnimation()
+    }
+
+    override fun swipeRight() {
+        if (viewList.isNotEmpty()) {
+            if (viewList[viewList.size - 1].animation?.hasEnded() == false)
+                return
+            dismissCard(viewList[viewList.size - 1], (screenWidth * 2))
+            cardContainerAdapter?.let {
+                if (it.getCount() > swipeIndex) {
+                    cardListener?.onRightSwipe(swipeIndex, it.getItem(swipeIndex))
+                    swipeIndex++
+                }
+            }
+        }
+
+    }
+
+    override fun swipeLeft() {
+        if (viewList.isNotEmpty()) {
+            if (viewList[viewList.size - 1].animation?.hasEnded() == false)
+                return
+            dismissCard(viewList[viewList.size - 1], -(screenWidth * 2))
+            cardContainerAdapter?.let {
+                if (it.getCount() > swipeIndex) {
+                    cardListener?.onLeftSwipe(swipeIndex, it.getItem(swipeIndex))
+                    swipeIndex++
+                }
+            }
+        }
     }
 
 }
