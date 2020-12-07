@@ -41,6 +41,7 @@ class CardContainer(context: Context, attrs: AttributeSet?) : FrameLayout(contex
     private var headerContainer: FrameLayout? = null
     private var footerContainer: FrameLayout? = null
     private var emptyContainer: FrameLayout? = null
+    private var draggableSurfaceLayout: FrameLayout? = null
 
     private var rightBoundary = 0f
     private var leftBoundary = 0f
@@ -99,13 +100,12 @@ class CardContainer(context: Context, attrs: AttributeSet?) : FrameLayout(contex
         emptyContainer = viewMain.findViewById(R.id.emptyLayout)
         headerContainer = viewMain.findViewById(R.id.headerContainer)
         footerContainer = viewMain.findViewById(R.id.footerContainer)
+        draggableSurfaceLayout = viewMain.findViewById(R.id.draggableSurfaceLayout)
         addView(viewMain)
     }
 
     private fun setCardForAnimation() {
         if (viewList.isNotEmpty()) {
-            resetY = ((10.dp * viewList.size).toFloat())
-            resetX = 15.dp.toFloat()
             viewList[viewList.size - 1].setOnTouchListener(this)
         } else {
             emptyContainer?.visibility = View.VISIBLE
@@ -218,6 +218,12 @@ class CardContainer(context: Context, attrs: AttributeSet?) : FrameLayout(contex
         if (v != null)
             when (event?.action) {
                 MotionEvent.ACTION_DOWN -> {
+
+                    if (v.parent != null) {
+                        (v.parent as ViewGroup).removeView(v)
+                        draggableSurfaceLayout?.addView(v)
+                    }
+
                     oldX = event.x
                     oldY = event.y
                     v.clearAnimation()
@@ -228,21 +234,27 @@ class CardContainer(context: Context, attrs: AttributeSet?) : FrameLayout(contex
                         isCardAtLeft(v) -> {
                             dismissCard(v, -(screenWidth * 2))
                             cardContainerAdapter?.let {
-                                cardListener?.onLeftSwipe(swipeIndex, it.getItem(swipeIndex))
-                                swipeIndex++
+                                if (it.getCount() > swipeIndex) {
+                                    cardListener?.onLeftSwipe(swipeIndex, it.getItem(swipeIndex))
+                                    swipeIndex++
+                                }
                             }
                         }
                         isCardAtRight(v) -> {
                             dismissCard(v, (screenWidth * 2))
                             cardContainerAdapter?.let {
-                                cardListener?.onRightSwipe(swipeIndex, it.getItem(swipeIndex))
-                                swipeIndex++
+                                if (it.getCount() > swipeIndex) {
+                                    cardListener?.onRightSwipe(swipeIndex, it.getItem(swipeIndex))
+                                    swipeIndex++
+                                }
                             }
                         }
                         else -> {
                             resetCard(v)
                             cardContainerAdapter?.let {
-                                cardListener?.onSwipeCancel(swipeIndex, it.getItem(swipeIndex))
+                                if (it.getCount() > swipeIndex) {
+                                    cardListener?.onSwipeCancel(swipeIndex, it.getItem(swipeIndex))
+                                }
                             }
                         }
                     }
@@ -309,7 +321,7 @@ class CardContainer(context: Context, attrs: AttributeSet?) : FrameLayout(contex
     private fun resetCard(card: View) {
         card.animate()
             .x(resetX)
-            .y(resetY)
+            .y(mainContainer!!.y)
             .rotation(0F)
             .setInterpolator(OvershootInterpolator()).duration = 300
     }
@@ -429,7 +441,6 @@ class CardContainer(context: Context, attrs: AttributeSet?) : FrameLayout(contex
                 }
             }
         }
-
     }
 
     override fun swipeLeft() {
