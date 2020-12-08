@@ -26,6 +26,7 @@ class MainActivity : AppCompatActivity(), CardListener {
         setContentView(R.layout.activity_main)
         cardContainer = findViewById(R.id.cardContainer)
 
+        /*Set Card Listeners*/
         cardContainer.setOnCardActionListener(this)
 
         /*Customization*/

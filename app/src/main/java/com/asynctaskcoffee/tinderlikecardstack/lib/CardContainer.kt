@@ -34,7 +34,7 @@ class CardContainer(context: Context, attrs: AttributeSet?) : FrameLayout(contex
 
     private var cardContainerAdapter: CardContainerAdapter? = null
 
-    var margin = 25.px
+    var margin = 20.px
     var marginTop = 10.px
     var maxStackSize = 5
 
