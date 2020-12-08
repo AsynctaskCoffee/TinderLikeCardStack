@@ -221,6 +221,11 @@ class CardContainer(context: Context, attrs: AttributeSet?) : FrameLayout(contex
 
                     if (v.parent != null) {
                         (v.parent as ViewGroup).removeView(v)
+                        v.layoutParams = LayoutParams(
+                            viewList[viewList.size - 1].width,
+                            viewList[viewList.size - 1].height
+                        )
+                        (v.layoutParams as MarginLayoutParams).topMargin += mainContainer!!.y.toInt()
                         draggableSurfaceLayout?.addView(v)
                     }
 
