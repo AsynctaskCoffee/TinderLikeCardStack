@@ -72,6 +72,7 @@ class CardContainer(context: Context, attrs: AttributeSet?) : FrameLayout(contex
 
     fun setEmptyView(v: View) {
         emptyContainer?.visibility = View.VISIBLE
+        mainContainer?.visibility = View.GONE
         if (v.parent != null)
             (v.parent as ViewGroup).removeView(v)
         emptyContainer?.removeAllViews()
@@ -110,6 +111,7 @@ class CardContainer(context: Context, attrs: AttributeSet?) : FrameLayout(contex
             viewList[viewList.size - 1].setOnTouchListener(this)
         } else {
             emptyContainer?.visibility = View.VISIBLE
+            mainContainer?.visibility = View.GONE
             cardListener?.onSwipeCompleted()
         }
     }
@@ -360,7 +362,8 @@ class CardContainer(context: Context, attrs: AttributeSet?) : FrameLayout(contex
         this.cardContainerAdapter?.actionListener = this
 
         if (cardContainerAdapter.getCount() > 0) {
-            emptyContainer?.visibility = View.INVISIBLE
+            emptyContainer?.visibility = View.GONE
+            mainContainer?.visibility = View.VISIBLE
         } else {
             return
         }
@@ -416,7 +419,8 @@ class CardContainer(context: Context, attrs: AttributeSet?) : FrameLayout(contex
     override fun notifyAppendData() {
         val needCount = maxStackSize - mainContainer!!.childCount
         if (needCount > 0) {
-            emptyContainer?.visibility = View.INVISIBLE
+            emptyContainer?.visibility = View.GONE
+            mainContainer?.visibility = View.VISIBLE
         }
         if ((count + needCount) < cardContainerAdapter!!.getCount()) {
             val size = (count + needCount)
