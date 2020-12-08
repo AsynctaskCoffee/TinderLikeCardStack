@@ -16,6 +16,7 @@ import android.view.animation.Transformation
 import android.widget.FrameLayout
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.contains
 import com.asynctaskcoffee.tinderlikecardstack.R
 import com.asynctaskcoffee.tinderlikecardstack.lib.CardContainerAdapter
 import kotlin.math.roundToInt
@@ -214,11 +215,14 @@ class CardContainer(context: Context, attrs: AttributeSet?) : FrameLayout(contex
         return false
     }
 
+
+    private var isFirstTimeMove = false
+
     override fun onTouch(v: View?, event: MotionEvent?): Boolean {
         if (v != null)
             when (event?.action) {
                 MotionEvent.ACTION_DOWN -> {
-
+                    isFirstTimeMove = mainContainer?.contains(v) == true
                     if (v.parent != null) {
                         (v.parent as ViewGroup).removeView(v)
                         v.layoutParams = LayoutParams(
@@ -228,13 +232,13 @@ class CardContainer(context: Context, attrs: AttributeSet?) : FrameLayout(contex
                         (v.layoutParams as MarginLayoutParams).topMargin += mainContainer!!.y.toInt()
                         draggableSurfaceLayout?.addView(v)
                     }
-
                     oldX = event.x
                     oldY = event.y
                     v.clearAnimation()
                     return true
                 }
                 MotionEvent.ACTION_UP -> {
+                    isFirstTimeMove = false
                     when {
                         isCardAtLeft(v) -> {
                             dismissCard(v, -(screenWidth * 2))
@@ -268,7 +272,7 @@ class CardContainer(context: Context, attrs: AttributeSet?) : FrameLayout(contex
 
                 MotionEvent.ACTION_MOVE -> {
                     newX = event.x
-                    newY = event.y
+                    newY = event.y.plus(if (isFirstTimeMove) mainContainer!!.y else 0f)
                     dX = newX - oldX
                     dY = newY - oldY
                     v.x = v.x.plus(dX)
@@ -332,7 +336,7 @@ class CardContainer(context: Context, attrs: AttributeSet?) : FrameLayout(contex
     }
 
     private fun setCardRotation(card: View, posX: Float) {
-        val rotation = (cardDegreesForTransform * (posX)) / screenWidth;
+        val rotation = (cardDegreesForTransform * (posX)) / screenWidth
         val halfCardHeight = (card.height / 2)
         if (oldY < halfCardHeight) {
             card.rotation = rotation
