@@ -26,9 +26,11 @@
                 android:weightSum="3">
 
                 <LinearLayout
+                    android:id="@+id/femaleSection"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:background="@color/white"
                     android:gravity="center"
                     android:orientation="horizontal">
 
@@ -39,11 +41,12 @@
                         android:src="@drawable/icons_2_dp_female_2_dp" />
 
                     <TextView
+                        android:id="@+id/textFemale"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center_horizontal"
                         android:text="Female"
-                        android:textColor="@color/white"
+                        android:textColor="#3827a3"
                         android:textSize="16sp"
                         android:textStyle="normal" />
                 </LinearLayout>
@@ -54,6 +57,7 @@
                     android:background="#33000000" />
 
                 <LinearLayout
+                    android:id="@+id/allSection"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -67,6 +71,7 @@
                         android:src="@drawable/icons_2_dp_other_2_dp" />
 
                     <TextView
+                        android:id="@+id/textAll"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center_horizontal"
@@ -82,6 +87,7 @@
                     android:background="#33000000" />
 
                 <LinearLayout
+                    android:id="@+id/maleSection"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -95,6 +101,7 @@
                         android:src="@drawable/icons_2_dp_male_2_dp" />
 
                     <TextView
+                        android:id="@+id/textMale"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center_horizontal"

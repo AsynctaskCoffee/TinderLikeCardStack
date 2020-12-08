@@ -382,8 +382,11 @@ class CardContainer(context: Context, attrs: AttributeSet?) : FrameLayout(contex
             holder.addView(cardContainerAdapter.getView(i - 1))
             viewList.add(childCard)
         }
-        for (view in viewList)
+        for (view in viewList) {
             mainContainer?.addView(view)
+        }
+        mainContainer?.pulseOnlyUp()
+
 
         count = viewList.size
 
@@ -410,7 +413,7 @@ class CardContainer(context: Context, attrs: AttributeSet?) : FrameLayout(contex
         }
     }
 
-    override fun notifyDataSetChanged() {
+    override fun notifyAppendData() {
         val needCount = maxStackSize - mainContainer!!.childCount
         if (needCount > 0) {
             emptyContainer?.visibility = View.INVISIBLE

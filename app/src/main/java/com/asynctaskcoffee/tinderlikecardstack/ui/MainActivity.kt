@@ -1,10 +1,13 @@
 package com.asynctaskcoffee.tinderlikecardstack.ui
 
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.asynctaskcoffee.tinderlikecardstack.R
 import com.asynctaskcoffee.tinderlikecardstack.lib.CardContainer
@@ -16,13 +19,12 @@ class MainActivity : AppCompatActivity(), CardListener {
 
     lateinit var cardContainer: CardContainer
     lateinit var adapter: MainAdapter
+    private var modelList = arrayListOf<MainTestModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         cardContainer = findViewById(R.id.cardContainer)
-
-        adapter = MainAdapter(generateTestData(), this)
 
         cardContainer.setOnCardActionListener(this)
 
@@ -36,6 +38,10 @@ class MainActivity : AppCompatActivity(), CardListener {
         cardContainer.addFooterView(generateFooterView())
         cardContainer.addHeaderView(generateHeaderView())
 
+        /*Setting Adapter*/
+        modelList.clear()
+        modelList.addAll(MainHelper.getFemaleModels())
+        adapter = MainAdapter(modelList, this)
         cardContainer.setAdapter(adapter)
     }
 
@@ -71,25 +77,63 @@ class MainActivity : AppCompatActivity(), CardListener {
         )
     }
 
-    private fun generateTestData(): ArrayList<MainTestModel> {
-        val list: ArrayList<MainTestModel> = arrayListOf()
-        for (i in 0..25) list.add(
-            MainTestModel(
-                "userName$i",
-                "https://picsum.photos/id/$i/200/300",
-                if (i % 2 == 0) R.drawable.icons_2_dp_female_2_dp else R.drawable.icons_2_dp_male_2_dp,
-                "25 - Last seen 5m ago"
-            )
-        )
-        return list
-    }
-
     private fun generateEmptyView(): View {
         return LayoutInflater.from(this).inflate(R.layout.empty_layout, null)
     }
 
     private fun generateHeaderView(): View {
-        return LayoutInflater.from(this).inflate(R.layout.example_header_view, null)
+        val v = LayoutInflater.from(this).inflate(R.layout.example_header_view, null)
+        val maleSection = v.findViewById<LinearLayout>(R.id.maleSection)
+        val femaleSection = v.findViewById<LinearLayout>(R.id.femaleSection)
+        val allSection = v.findViewById<LinearLayout>(R.id.allSection)
+
+        val textMale = v.findViewById<TextView>(R.id.textMale)
+        val textFemale = v.findViewById<TextView>(R.id.textFemale)
+        val textAll = v.findViewById<TextView>(R.id.textAll)
+
+        maleSection.setOnClickListener {
+            maleSection.setBackgroundColor(Color.WHITE)
+            femaleSection.setBackgroundColor(Color.TRANSPARENT)
+            allSection.setBackgroundColor(Color.TRANSPARENT)
+
+            textMale.setTextColor(Color.parseColor("#3827a3"))
+            textFemale.setTextColor(Color.parseColor("#ffffff"))
+            textAll.setTextColor(Color.parseColor("#ffffff"))
+
+            modelList.clear()
+            modelList.addAll(MainHelper.getMaleModels())
+            adapter = MainAdapter(modelList, this)
+            cardContainer.setAdapter(adapter)
+        }
+        femaleSection.setOnClickListener {
+            femaleSection.setBackgroundColor(Color.WHITE)
+            maleSection.setBackgroundColor(Color.TRANSPARENT)
+            allSection.setBackgroundColor(Color.TRANSPARENT)
+
+            textMale.setTextColor(Color.parseColor("#ffffff"))
+            textFemale.setTextColor(Color.parseColor("#3827a3"))
+            textAll.setTextColor(Color.parseColor("#ffffff"))
+
+            modelList.clear()
+            modelList.addAll(MainHelper.getFemaleModels())
+            adapter = MainAdapter(modelList, this)
+            cardContainer.setAdapter(adapter)
+        }
+        allSection.setOnClickListener {
+            allSection.setBackgroundColor(Color.WHITE)
+            maleSection.setBackgroundColor(Color.TRANSPARENT)
+            femaleSection.setBackgroundColor(Color.TRANSPARENT)
+
+            textMale.setTextColor(Color.parseColor("#ffffff"))
+            textFemale.setTextColor(Color.parseColor("#ffffff"))
+            textAll.setTextColor(Color.parseColor("#3827a3"))
+
+            modelList.clear()
+            modelList.addAll(MainHelper.getAllModels())
+            cardContainer.setAdapter(adapter)
+        }
+
+        return v
     }
 
     private fun generateFooterView(): View {
@@ -97,6 +141,18 @@ class MainActivity : AppCompatActivity(), CardListener {
         val cancelView = v.findViewById<ImageView>(R.id.cancel)
         val shakeView = v.findViewById<ImageView>(R.id.shake)
         val likeView = v.findViewById<ImageView>(R.id.like)
+        val shuffleView = v.findViewById<LinearLayout>(R.id.shuffleView)
+
+        shuffleView.setOnClickListener {
+            it.pulse()
+            modelList.shuffle()
+            adapter = MainAdapter(modelList, this)
+            cardContainer.setAdapter(adapter)
+        }
+
+        shakeView.setOnClickListener {
+            it.pulse()
+        }
 
         cancelView.setOnClickListener {
             it.pulse()

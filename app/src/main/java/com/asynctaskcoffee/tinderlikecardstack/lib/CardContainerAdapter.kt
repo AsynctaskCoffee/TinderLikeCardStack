@@ -15,8 +15,8 @@ abstract class CardContainerAdapter {
     fun swipeLeft() = actionListener?.swipeLeft()
 
 
-    fun notifyDataSetChanged() {
-        dataListener?.notifyDataSetChanged()
+    fun notifyAppendData() {
+        dataListener?.notifyAppendData()
     }
 
     interface ActionListener {
@@ -25,6 +25,6 @@ abstract class CardContainerAdapter {
     }
 
     interface DataListener {
-        fun notifyDataSetChanged()
+        fun notifyAppendData()
     }
 }

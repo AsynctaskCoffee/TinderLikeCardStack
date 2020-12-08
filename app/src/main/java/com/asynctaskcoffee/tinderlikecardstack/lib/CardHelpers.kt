@@ -18,3 +18,13 @@ fun View.pulse() {
     animatorSet.interpolator = AccelerateInterpolator()
     animatorSet.start()
 }
+
+fun View.pulseOnlyUp() {
+    val animatorSet = AnimatorSet()
+    val object1: ObjectAnimator = ObjectAnimator.ofFloat(this, "scaleY", 0.95f, 1f, 1f)
+    val object2: ObjectAnimator = ObjectAnimator.ofFloat(this, "scaleX", 0.95f, 1f, 1f)
+    animatorSet.playTogether(object1, object2)
+    animatorSet.duration = 250
+    animatorSet.interpolator = AccelerateInterpolator()
+    animatorSet.start()
+}

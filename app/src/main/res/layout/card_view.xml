@@ -18,7 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:layout_margin="13dp"
+        android:layout_margin="16dp"
         android:orientation="vertical">
 
         <TextView
@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:letterSpacing="-0.02"
             android:textColor="@color/white"
-            android:textSize="16sp"
+            android:textSize="24sp"
             android:textStyle="bold" />
 
         <LinearLayout
@@ -51,7 +51,7 @@
                 android:lineSpacingExtra="3.3sp"
                 android:text="24 - Last seen 16m ago"
                 android:textColor="@color/white"
-                android:textSize="12sp"
+                android:textSize="13sp"
                 android:textStyle="normal" />
 
         </LinearLayout>
