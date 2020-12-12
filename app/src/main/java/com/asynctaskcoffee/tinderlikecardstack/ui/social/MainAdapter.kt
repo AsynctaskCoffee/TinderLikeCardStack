@@ -1,4 +1,4 @@
-package com.asynctaskcoffee.tinderlikecardstack.ui
+package com.asynctaskcoffee.tinderlikecardstack.ui.social
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -6,8 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import com.asynctaskcoffee.cardstack.CardContainerAdapter
 import com.asynctaskcoffee.tinderlikecardstack.R
-import com.asynctaskcoffee.tinderlikecardstack.lib.CardContainerAdapter
 import com.squareup.picasso.Picasso
 
 class MainAdapter(private val list: ArrayList<MainTestModel>, context: Context) :

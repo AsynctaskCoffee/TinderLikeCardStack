@@ -6,10 +6,10 @@
     android:layout_height="match_parent"
     android:background="@drawable/gradient_background"
     android:orientation="vertical"
-    tools:context=".ui.MainActivity">
+    tools:context=".ui.social.MainActivity">
 
 
-    <com.asynctaskcoffee.tinderlikecardstack.lib.CardContainer
+    <com.asynctaskcoffee.cardstack.CardContainer
         android:id="@+id/cardContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

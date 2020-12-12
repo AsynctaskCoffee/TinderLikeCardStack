@@ -1,4 +1,4 @@
-package com.asynctaskcoffee.tinderlikecardstack.ui
+package com.asynctaskcoffee.tinderlikecardstack.ui.social
 
 class MainTestModel(
     var userName: String,

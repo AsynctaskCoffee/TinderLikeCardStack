@@ -1,4 +1,4 @@
-package com.asynctaskcoffee.tinderlikecardstack.lib
+package com.asynctaskcoffee.cardstack
 
 interface CardListener {
     fun onLeftSwipe(position: Int, model: Any)

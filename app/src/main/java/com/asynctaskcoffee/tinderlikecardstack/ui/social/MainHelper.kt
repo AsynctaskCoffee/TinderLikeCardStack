@@ -1,4 +1,4 @@
-package com.asynctaskcoffee.tinderlikecardstack.ui
+package com.asynctaskcoffee.tinderlikecardstack.ui.social
 
 import com.asynctaskcoffee.tinderlikecardstack.R
 import kotlin.collections.ArrayList

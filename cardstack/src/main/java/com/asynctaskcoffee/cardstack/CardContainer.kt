@@ -1,4 +1,4 @@
-package com.asynctaskcoffee.tinderlikecardstack.lib
+package com.asynctaskcoffee.cardstack
 
 import android.animation.Animator
 import android.annotation.SuppressLint
@@ -17,8 +17,6 @@ import android.widget.FrameLayout
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.contains
-import com.asynctaskcoffee.tinderlikecardstack.R
-import com.asynctaskcoffee.tinderlikecardstack.lib.CardContainerAdapter
 import kotlin.math.roundToInt
 
 
@@ -169,7 +167,7 @@ class CardContainer(context: Context, attrs: AttributeSet?) : FrameLayout(contex
                 v.layoutParams = params
             }
         }
-        a.duration = 150
+        a.duration = 50
         v.startAnimation(a)
     }
 
@@ -243,7 +241,7 @@ class CardContainer(context: Context, attrs: AttributeSet?) : FrameLayout(contex
                     isFirstTimeMove = false
                     when {
                         isCardAtLeft(v) -> {
-                            dismissCard(v, -(screenWidth * 2))
+                            dismissCard(v, -(screenWidth * 2),false)
                             cardContainerAdapter?.let {
                                 if (it.getCount() > swipeIndex) {
                                     cardListener?.onLeftSwipe(swipeIndex, it.getItem(swipeIndex))
@@ -252,7 +250,7 @@ class CardContainer(context: Context, attrs: AttributeSet?) : FrameLayout(contex
                             }
                         }
                         isCardAtRight(v) -> {
-                            dismissCard(v, (screenWidth * 2))
+                            dismissCard(v, (screenWidth * 2),false)
                             cardContainerAdapter?.let {
                                 if (it.getCount() > swipeIndex) {
                                     cardListener?.onRightSwipe(swipeIndex, it.getItem(swipeIndex))
@@ -288,10 +286,11 @@ class CardContainer(context: Context, attrs: AttributeSet?) : FrameLayout(contex
     }
 
 
-    private fun dismissCard(card: View, xPos: Int) {
+    private fun dismissCard(card: View, xPos: Int, rotate: Boolean) {
         card.animate()
             .x(xPos.toFloat())
             .y(0F)
+            .rotation(if (rotate) {if (xPos > 0) 45f else -45f} else 0f)
             .setInterpolator(AccelerateInterpolator())
             .setDuration(300)
             .setListener(object : Animator.AnimatorListener {
@@ -449,7 +448,7 @@ class CardContainer(context: Context, attrs: AttributeSet?) : FrameLayout(contex
         if (viewList.isNotEmpty()) {
             if (viewList[viewList.size - 1].animation?.hasEnded() == false)
                 return
-            dismissCard(viewList[viewList.size - 1], (screenWidth * 2))
+            dismissCard(viewList[viewList.size - 1], (screenWidth * 2),true)
             cardContainerAdapter?.let {
                 if (it.getCount() > swipeIndex) {
                     cardListener?.onRightSwipe(swipeIndex, it.getItem(swipeIndex))
@@ -463,7 +462,7 @@ class CardContainer(context: Context, attrs: AttributeSet?) : FrameLayout(contex
         if (viewList.isNotEmpty()) {
             if (viewList[viewList.size - 1].animation?.hasEnded() == false)
                 return
-            dismissCard(viewList[viewList.size - 1], -(screenWidth * 2))
+            dismissCard(viewList[viewList.size - 1], -(screenWidth * 2),true)
             cardContainerAdapter?.let {
                 if (it.getCount() > swipeIndex) {
                     cardListener?.onLeftSwipe(swipeIndex, it.getItem(swipeIndex))

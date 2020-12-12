@@ -1,4 +1,4 @@
-package com.asynctaskcoffee.tinderlikecardstack.lib
+package com.asynctaskcoffee.cardstack
 
 import android.view.View
 

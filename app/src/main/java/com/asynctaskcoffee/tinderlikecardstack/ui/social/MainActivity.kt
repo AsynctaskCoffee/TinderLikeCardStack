@@ -1,4 +1,4 @@
-package com.asynctaskcoffee.tinderlikecardstack.ui
+package com.asynctaskcoffee.tinderlikecardstack.ui.social
 
 import android.graphics.Color
 import android.os.Bundle
@@ -9,11 +9,11 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.asynctaskcoffee.cardstack.CardContainer
+import com.asynctaskcoffee.cardstack.CardListener
+import com.asynctaskcoffee.cardstack.pulse
+import com.asynctaskcoffee.cardstack.px
 import com.asynctaskcoffee.tinderlikecardstack.R
-import com.asynctaskcoffee.tinderlikecardstack.lib.CardContainer
-import com.asynctaskcoffee.tinderlikecardstack.lib.CardListener
-import com.asynctaskcoffee.tinderlikecardstack.lib.pulse
-import com.asynctaskcoffee.tinderlikecardstack.lib.px
 
 class MainActivity : AppCompatActivity(), CardListener {
 

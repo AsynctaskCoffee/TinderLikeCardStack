@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.asynctaskcoffee.tinderlikecardstack">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -11,7 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.TinderLikeCardStack">
-        <activity android:name=".ui.MainActivity">
+        <activity android:name=".ui.calendar.CalendarActivity" />
+        <activity android:name=".ui.social.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
