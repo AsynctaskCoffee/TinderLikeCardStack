@@ -1,6 +1,6 @@
 # TinderLike Cards ♀️♂️
 
-![Preview](/previews/swipepreview.gif)
+![Preview](/previews/10.png)
 
 > Stylish animations and designs like Tinder
 
